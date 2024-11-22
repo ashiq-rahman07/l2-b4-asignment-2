@@ -3,5 +3,8 @@
         "activityBar.background": "#4A1656",
         "titleBar.activeBackground": "#671F78",
         "titleBar.activeForeground": "#FDFBFE"
-    }
+    },
+    "cSpell.words": [
+        "succesfully"
+    ]
 }
