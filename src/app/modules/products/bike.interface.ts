@@ -22,5 +22,6 @@ import { Model } from "mongoose";
   
 
   export interface BikeModel extends Model<TBike>{
+    
     isBikeExists(id: string):Promise<TBike | null>
   }
