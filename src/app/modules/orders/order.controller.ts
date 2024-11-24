@@ -15,7 +15,7 @@ const createOrder = async (req: Request, res: Response) => {
       });
     } else {
       res.status(200).json({
-        message: 'Order created successfully',
+        message: 'Order are created succesfully',
         status: true,
         data: result.data,
       });
@@ -34,8 +34,8 @@ const getAllOrders = async (req: Request, res: Response) => {
     const result = await OrderService.getAllOrders();
 
     res.status(200).json({
-      success: true,
-      message: 'Ordes are retrieved succesfully',
+      message: 'Orders are retrieved succesfully',
+      status: true,
       data: result,
     });
   } catch (err: any) {
