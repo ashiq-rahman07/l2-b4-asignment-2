@@ -1,8 +1,8 @@
-import mongoose, { model } from "mongoose";
-import { OrderModel, TOrder } from "./order.interface";
+import mongoose, { model } from 'mongoose';
+import { OrderModel, TOrder } from './order.interface';
 
-
-const orderSchema = new mongoose.Schema({
+const orderSchema = new mongoose.Schema(
+  {
     email: {
       type: String,
       required: true,
@@ -12,7 +12,6 @@ const orderSchema = new mongoose.Schema({
     product: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      
     },
     quantity: {
       type: Number,
@@ -23,10 +22,13 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       required: true,
     },
-  }, { timestamps: true ,
+  },
+  {
+    timestamps: true,
     toJSON: {
-        virtuals: true,
+      virtuals: true,
     },
-  });
-  
-export  const Order = model<TOrder,OrderModel>('Order', orderSchema);
+  },
+);
+
+export const Order = model<TOrder, OrderModel>('Order', orderSchema);
