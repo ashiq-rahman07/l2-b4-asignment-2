@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const orderSchema = z.object({
+const orderValidationSchema = z.object({
   email: z
     .string()
     .email()
@@ -11,4 +11,4 @@ const orderSchema = z.object({
   totalPrice: z.number().min(0), // Total price must be non-negative
 });
 
-export default orderSchema;
+export default orderValidationSchema;

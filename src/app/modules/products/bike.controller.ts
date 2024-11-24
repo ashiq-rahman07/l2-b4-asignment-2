@@ -30,8 +30,9 @@ const getAllBikes = async (req: Request, res: Response)=>{
         const result = await BikeServices.getAllBikesFromDB();
     
         res.status(200).json({
-          success: true,
           message: 'Bikes are retrieved succesfully',
+          status: true,
+         
           data: result,
         });
       } catch (err: any) {
@@ -50,10 +51,11 @@ const getSingleBike = async (req: Request, res: Response) => {
       const result = await BikeServices.getSingleBike(bikeId);
   
       res.status(200).json({
-        success: true,
-        message: 'Bike is retrieved succesfully',
+        message: 'Bike are retrieved succesfully',
+        status: true,
         data: result,
       });
+
     } catch (err: any) {
       res.status(500).json({
         success: false,
@@ -67,11 +69,13 @@ const getSingleBike = async (req: Request, res: Response) => {
     try {
       const {bikeId}  = req.params;
   
-      const result = await BikeServices.deleteBikeFromDB(bikeId);
+       await BikeServices.deleteBikeFromDB(bikeId);
   
       res.status(200).json({
-        success: true,
-        message: 'Bike deleted succesfully',
+        message: 'Bike are delete succesfully',
+        status: true,
+       
+        data: {},
         
       });
     } catch (err: any) {
@@ -92,8 +96,9 @@ const getSingleBike = async (req: Request, res: Response) => {
       const result = await BikeServices.updateBikeFromDB(bikeId,updateBikeData);
   
       res.status(200).json({
-        success: true,
-        message: 'Bike update succesfully',
+        message: 'Bike are update succesfully',
+        status: true,
+       
         data: result,
       });
     } catch (err: any) {
