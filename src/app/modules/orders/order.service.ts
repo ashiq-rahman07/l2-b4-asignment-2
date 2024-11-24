@@ -17,8 +17,6 @@ const createOrder = async (orderData: TOrder): Promise<CreateOrderResponse> => {
     return { success: false, message: 'Insufficient stock available.' };
   }
 
- 
-
   // Create the order
   const order = new Order({
     email,

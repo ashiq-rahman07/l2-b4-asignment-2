@@ -15,6 +15,12 @@ app.use((0, cors_1.default)());
 app.use('/api/products', bike_route_1.BikeRouter);
 app.use('/api/orders', order_route_1.OrderRouter);
 //Handle not found
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: true,
+        message: 'Assignment 2 completed succesfully',
+    });
+});
 app.use((req, res, next) => {
     res.status(404).json({
         success: false,

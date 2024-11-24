@@ -5,7 +5,7 @@ import bikeValidationSchema from './bike.validation';
 const createBike = async (req: Request, res: Response) => {
   try {
     const { bike: bikeData } = req.body;
-    
+
     const zodBikeData = bikeValidationSchema.parse(bikeData);
     const result = await BikeServices.createBikeIntoDB(zodBikeData);
 
@@ -44,9 +44,9 @@ const getAllBikes = async (req: Request, res: Response) => {
 
 const getSingleBike = async (req: Request, res: Response) => {
   try {
-    const { bikeId } = req.params;
+    const { productId } = req.params;
 
-    const result = await BikeServices.getSingleBike(bikeId);
+    const result = await BikeServices.getSingleBike(productId);
 
     res.status(200).json({
       message: 'Bike are retrieved succesfully',
@@ -64,9 +64,9 @@ const getSingleBike = async (req: Request, res: Response) => {
 
 const deleteBike = async (req: Request, res: Response) => {
   try {
-    const { bikeId } = req.params;
+    const { productId } = req.params;
 
-    await BikeServices.deleteBikeFromDB(bikeId);
+    await BikeServices.deleteBikeFromDB(productId);
 
     res.status(200).json({
       message: 'Bike are delete succesfully',
@@ -84,10 +84,13 @@ const deleteBike = async (req: Request, res: Response) => {
 };
 const updateBike = async (req: Request, res: Response) => {
   try {
-    const { bikeId } = req.params;
+    const { productId } = req.params;
     const updateBikeData = req.body;
 
-    const result = await BikeServices.updateBikeFromDB(bikeId, updateBikeData);
+    const result = await BikeServices.updateBikeFromDB(
+      productId,
+      updateBikeData,
+    );
 
     res.status(200).json({
       message: 'Bike are update succesfully',

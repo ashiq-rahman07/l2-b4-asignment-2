@@ -19,9 +19,8 @@ app.get('/', (req, res) => {
   res.status(200).json({
     status: true,
     message: 'Assignment 2 completed succesfully',
-    
-  })
-})
+  });
+});
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).json({
     success: false,

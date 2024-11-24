@@ -53,8 +53,8 @@ const getAllBikes = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const getSingleBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bikeId } = req.params;
-        const result = yield bike_service_1.BikeServices.getSingleBike(bikeId);
+        const { productId } = req.params;
+        const result = yield bike_service_1.BikeServices.getSingleBike(productId);
         res.status(200).json({
             message: 'Bike are retrieved succesfully',
             status: true,
@@ -71,8 +71,8 @@ const getSingleBike = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 const deleteBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bikeId } = req.params;
-        yield bike_service_1.BikeServices.deleteBikeFromDB(bikeId);
+        const { productId } = req.params;
+        yield bike_service_1.BikeServices.deleteBikeFromDB(productId);
         res.status(200).json({
             message: 'Bike are delete succesfully',
             status: true,
@@ -89,9 +89,9 @@ const deleteBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 const updateBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bikeId } = req.params;
+        const { productId } = req.params;
         const updateBikeData = req.body;
-        const result = yield bike_service_1.BikeServices.updateBikeFromDB(bikeId, updateBikeData);
+        const result = yield bike_service_1.BikeServices.updateBikeFromDB(productId, updateBikeData);
         res.status(200).json({
             message: 'Bike are update succesfully',
             status: true,

@@ -27,7 +27,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             res.status(200).json({
-                message: 'Order created successfully',
+                message: 'Order are created succesfully',
                 status: true,
                 data: result.data,
             });
@@ -45,8 +45,8 @@ const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const result = yield order_service_1.OrderService.getAllOrders();
         res.status(200).json({
-            success: true,
-            message: 'Ordes are retrieved succesfully',
+            message: 'Orders are retrieved succesfully',
+            status: true,
             data: result,
         });
     }
