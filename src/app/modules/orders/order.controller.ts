@@ -1,36 +1,64 @@
 import { OrderService } from './order.service';
-import { Bike } from "../products/bike.model";
+
 import {  Request, Response } from "express";
 
 
 const createOrder = async (req: Request, res: Response)=>{
     
   try {
-  
-    // const {product:bikeId }= req.body;
-    
-    // const bikeData = await Bike.findById(bikeId);
-    // console.log(bikeData);
-    // if (!bikeData) {
-    //     throw Error("Product not found.")
-    //     // return { success: false, message: "Product not found." };
-    //   }
-      const result = await OrderService.createOrder(req.body);
-
-      res.status(200).json({
-        success: true,
-        message: 'Bike update succesfully',
-        data:result
    
-      });
+    
+      const result = await OrderService.createOrder(req.body);
+   
+
+      if (!result.success) {
+      res.status(400).json({
+          success: false,
+          message: result.message,
+        });
+      }else{
+        res.status(200).json({
+          message: 'Order created successfully',
+          status: true,
+          data:result.data
+     
+        });
+      }
   
-  } catch (error) {
-    console.log(error);
+    
+    
+     
+  
+  } catch (err :any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'something went wrong',
+      error: err,
+    });
  
   }
+}
+const getAllOrders = async (req: Request, res: Response)=>{
+  try {
+      const result = await OrderService.getAllOrders();
+  
+      res.status(200).json({
+        success: true,
+        message: 'Ordes are retrieved succesfully',
+        data: result,
+      });
+
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        message: err.message || 'something went wrong',
+        error: err,
+      });
+    }
 }
 
 
 export const OrderControllers = {
-    createOrder
+    createOrder,
+    getAllOrders
 }

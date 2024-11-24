@@ -1,5 +1,11 @@
 import { Model } from "mongoose";
 
+
+export type CreateOrderResponse =
+  | { success: false; message: string }
+  | { success: true; data: TOrder };
+
+  
 export type TOrder = {
     email: string;
     product: string;
