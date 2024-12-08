@@ -4,7 +4,7 @@ import bikeValidationSchema from './bike.validation';
 
 const createBike = async (req: Request, res: Response) => {
   try {
-    const { bike: bikeData } = req.body;
+    const bikeData = req.body;
 
     const zodBikeData = bikeValidationSchema.parse(bikeData);
     const result = await BikeServices.createBikeIntoDB(zodBikeData);
