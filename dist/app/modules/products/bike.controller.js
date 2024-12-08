@@ -17,7 +17,7 @@ const bike_service_1 = require("./bike.service");
 const bike_validation_1 = __importDefault(require("./bike.validation"));
 const createBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { bike: bikeData } = req.body;
+        const bikeData = req.body;
         const zodBikeData = bike_validation_1.default.parse(bikeData);
         const result = yield bike_service_1.BikeServices.createBikeIntoDB(zodBikeData);
         res.status(200).json({
