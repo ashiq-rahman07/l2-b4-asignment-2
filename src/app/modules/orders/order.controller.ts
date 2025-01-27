@@ -1,33 +1,32 @@
+import httpStatus from 'http-status';
 import { OrderService } from './order.service';
 
 import { Request, Response } from 'express';
-import orderValidationSchema from './order.validation';
+// import orderValidationSchema from './order.validation';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
+import AppError from '../../errors/AppError';
 
-const createOrder = async (req: Request, res: Response) => {
-  try {
-    const zodOrderData = orderValidationSchema.parse(req.body);
-    const result = await OrderService.createOrder(zodOrderData);
+const createOrder = catchAsync(async(req,res)=>{
+    const result = await OrderService.createOrder(req.body);
+   
 
-    if (!result.success) {
-      res.status(400).json({
-        success: false,
-        message: result.message,
-      });
-    } else {
-      res.status(200).json({
-        message: 'Order are created succesfully',
-        status: true,
-        data: result.data,
-      });
+    if(!result.success){
+    
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          'Product can not find for this order',
+        );
+     
     }
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Course is created succesfully',
+      data: result.data
     });
-  }
-};
+})
+
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {

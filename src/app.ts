@@ -1,32 +1,30 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 
 import cors from 'cors';
-import { BikeRouter } from './app/modules/products/bike.route';
-import { OrderRouter } from './app/modules/orders/order.route';
+
+import router from './app/routes';
+import globalErrorHandler from './app/middlewares/globalErrorhandler';
+import notFound from './app/middlewares/notFound';
 
 const app: Application = express();
 
 //parsers
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 
 // application routes
-app.use('/api/products', BikeRouter);
-app.use('/api/orders', OrderRouter);
+app.use('/api/v1', router);
 
-//Handle not found
+
 app.get('/', (req, res) => {
   res.status(200).json({
     status: true,
     message: 'Assignment 2 completed succesfully',
   });
 });
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({
-    success: false,
-    message: 'API endpoint not found.',
-  });
 
-  next();
-});
+app.use(globalErrorHandler);
+
+//Not Found
+app.use(notFound);
 export default app;

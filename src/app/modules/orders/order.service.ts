@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { Order } from './order.model';
 
 const createOrder = async (orderData: TOrder): Promise<CreateOrderResponse> => {
-  const { email, product, quantity, totalPrice } = orderData;
+  const { user, product, quantity } = orderData;
 
   // Find the product
   const bike = await Bike.findById(product);
@@ -17,12 +17,14 @@ const createOrder = async (orderData: TOrder): Promise<CreateOrderResponse> => {
     return { success: false, message: 'Insufficient stock available.' };
   }
 
+  const calculatePrice = bike.price * quantity;
+
   // Create the order
   const order = new Order({
-    email,
+    user,
     product: bike._id,
     quantity,
-    totalPrice,
+    totalPrice: calculatePrice,
   });
 
   // Reduce the product quantity

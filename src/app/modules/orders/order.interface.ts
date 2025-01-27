@@ -1,12 +1,12 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type CreateOrderResponse =
   | { success: false; message: string }
   | { success: true; data: TOrder };
 
 export type TOrder = {
-  email: string;
-  product: string;
+  user: Types.ObjectId;
+  product: Types.ObjectId;
   quantity: number;
   totalPrice: number;
 };

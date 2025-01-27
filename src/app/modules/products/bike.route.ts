@@ -3,7 +3,7 @@ import { BikeControllers } from './bike.controller';
 
 const router = express.Router();
 
-router.post('/', BikeControllers.createBike);
+router.post('/create-product', BikeControllers.createBike);
 router.get('/:productId', BikeControllers.getSingleBike);
 router.get('/', BikeControllers.getAllBikes);
 router.delete('/:productId', BikeControllers.deleteBike);

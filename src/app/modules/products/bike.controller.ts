@@ -1,46 +1,32 @@
 import { Request, Response } from 'express';
 import { BikeServices } from './bike.service';
-import bikeValidationSchema from './bike.validation';
+import httpStatus from 'http-status';
+// import bikeValidationSchema from './bike.validation';
+import catchAsync from '../../utils/catchAsync';
+import sendResponse from '../../utils/sendResponse';
 
-const createBike = async (req: Request, res: Response) => {
-  try {
-    const bikeData = req.body;
+const createBike =catchAsync(async (req, res) => {
+  const result = await BikeServices.createBikeIntoDB(req.body);
 
-    const zodBikeData = bikeValidationSchema.parse(bikeData);
-    const result = await BikeServices.createBikeIntoDB(zodBikeData);
+  sendResponse(res, {
+    success: true,
+    message: 'Bike created successfully',
+    statusCode: httpStatus.OK,
+    data: result
+});
+});
 
-    res.status(200).json({
-      message: 'Bike is created succesfully',
-      status: true,
-      data: result,
-    });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
-  }
-};
+const getAllBikes = catchAsync(async (req, res) => {
+  const result = await BikeServices.getAllBikesFromDB();
 
-const getAllBikes = async (req: Request, res: Response) => {
-  try {
-    const result = await BikeServices.getAllBikesFromDB();
+  sendResponse(res, {
+    success: true,
+    message: 'Bike retrive successfully',
+    statusCode: httpStatus.OK,
+    data: result
+});
+});
 
-    res.status(200).json({
-      message: 'Bikes are retrieved succesfully',
-      status: true,
-
-      data: result,
-    });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
-  }
-};
 
 const getSingleBike = async (req: Request, res: Response) => {
   try {
