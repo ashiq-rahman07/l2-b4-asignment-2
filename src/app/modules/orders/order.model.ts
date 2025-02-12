@@ -1,5 +1,5 @@
 import mongoose, { model, Schema } from 'mongoose';
-import {  IOrder, TOrder } from './order.interface';
+import { IOrder, TOrder } from './order.interface';
 
 const OrderSchema = new Schema<IOrder>(
   {
@@ -9,30 +9,29 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
     },
     products: [
-        {
-          product:{
-              type:Schema.Types.ObjectId,
-              ref: 'Bike',
-              required: true,
-            },
-        
-          quantity: {
-            type: Number,
-            required: true,
-            min: 1,
-          },
+      {
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: 'Bike',
+          required: true,
         },
 
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+      },
     ],
     totalPrice: {
       type: Number,
       required: true,
     },
-   
+
     status: {
       type: String,
-      enum: ["Pending", "Paid", "Shipped", "Completed", "Cancelled"],
-      default: "Pending",
+      enum: ['Pending', 'Paid', 'Shipped', 'Completed', 'Cancelled'],
+      default: 'Pending',
     },
     transaction: {
       id: String,
@@ -43,7 +42,6 @@ const OrderSchema = new Schema<IOrder>(
       method: String,
       date_time: String,
     },
-    
   },
   {
     timestamps: true,
@@ -53,5 +51,5 @@ const OrderSchema = new Schema<IOrder>(
   },
 );
 
- const Order = model<IOrder>('Order', OrderSchema);
+const Order = model<IOrder>('Order', OrderSchema);
 export default Order;

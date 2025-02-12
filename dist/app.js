@@ -5,27 +5,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const bike_route_1 = require("./app/modules/products/bike.route");
-const order_route_1 = require("./app/modules/orders/order.route");
+const routes_1 = __importDefault(require("./app/routes"));
+const globalErrorhandler_1 = __importDefault(require("./app/middlewares/globalErrorhandler"));
+const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const app = (0, express_1.default)();
 //parsers
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: ['http://localhost:5173'], credentials: true }));
 // application routes
-app.use('/api/products', bike_route_1.BikeRouter);
-app.use('/api/orders', order_route_1.OrderRouter);
-//Handle not found
+app.use('/api/v1', routes_1.default);
 app.get('/', (req, res) => {
     res.status(200).json({
         status: true,
         message: 'Assignment 2 completed succesfully',
     });
 });
-app.use((req, res, next) => {
-    res.status(404).json({
-        success: false,
-        message: 'API endpoint not found.',
-    });
-    next();
-});
+app.use(globalErrorhandler_1.default);
+//Not Found
+app.use(notFound_1.default);
 exports.default = app;

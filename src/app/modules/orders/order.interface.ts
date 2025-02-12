@@ -1,4 +1,4 @@
-import {Document, Model, Types } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 
 export type CreateOrderResponse =
   | { success: false; message: string }
@@ -18,7 +18,7 @@ export interface IOrder extends Document {
     quantity: number;
   }[];
   totalPrice: number;
-  status: "Pending" | "Paid" | "Shipped" | "Completed" | "Cancelled";
+  status: 'Pending' | 'Paid' | 'Shipped' | 'Completed' | 'Cancelled';
   transaction: {
     id: string;
     transactionStatus: string;

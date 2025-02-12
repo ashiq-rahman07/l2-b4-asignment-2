@@ -1,4 +1,3 @@
-
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { UserServices } from './user.service';
@@ -11,7 +10,7 @@ const registerUserIntoDB = catchAsync(async (req, res) => {
     success: true,
     message: 'User registered successfully',
     statusCode: 201,
-    data: result
+    data: result,
   });
 });
 
@@ -22,13 +21,9 @@ const getAllUsers = catchAsync(async (req, res) => {
     success: true,
     message: 'User retrieve successfully',
     statusCode: 201,
-    data: result
+    data: result,
+  });
 });
-});
-
-
-
- 
 
 export const UserControllers = {
   registerUserIntoDB,

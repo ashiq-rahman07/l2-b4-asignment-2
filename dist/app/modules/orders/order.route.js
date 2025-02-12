@@ -6,8 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const order_controller_1 = require("./order.controller");
+const auth_1 = __importDefault(require("../../middlewares/auth"));
 const router = express_1.default.Router();
-router.post('/', order_controller_1.OrderControllers.createOrder);
-router.get('/', order_controller_1.OrderControllers.getAllOrders);
+router.post('/create-order', (0, auth_1.default)('customer'), order_controller_1.OrderControllers.createOrder);
+router.get('/verify', (0, auth_1.default)('customer'), order_controller_1.OrderControllers.verifyPayment);
+router.get('/', 
+// auth('admin','customer'),
+order_controller_1.OrderControllers.getAllOrders);
 router.get('/revenue', order_controller_1.OrderControllers.getTotalRevenue);
 exports.OrderRouter = router;

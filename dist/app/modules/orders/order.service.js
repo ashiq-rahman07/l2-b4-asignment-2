@@ -8,46 +8,70 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderService = void 0;
+const http_status_1 = __importDefault(require("http-status"));
 const bike_model_1 = require("../products/bike.model");
-const order_model_1 = require("./order.model");
-const createOrder = (orderData) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, product, quantity, totalPrice } = orderData;
-    // Find the product
-    const bike = yield bike_model_1.Bike.findById(product);
-    if (!bike) {
-        return { success: false, message: 'bike not found' };
-    }
-    // Check stock availability
-    if (bike.quantity < quantity) {
-        return { success: false, message: 'Insufficient stock available.' };
-    }
-    // Create the order
-    const order = new order_model_1.Order({
-        email,
-        product: bike._id,
-        quantity,
+const AppError_1 = __importDefault(require("../../errors/AppError"));
+const order_utils_1 = require("./order.utils");
+const order_model_1 = __importDefault(require("./order.model"));
+const console_1 = require("console");
+const createOrder = (user, payload, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (!((_a = payload === null || payload === void 0 ? void 0 : payload.products) === null || _a === void 0 ? void 0 : _a.length))
+        throw new AppError_1.default(http_status_1.default.NOT_ACCEPTABLE, 'Order is not specified');
+    const products = payload.products;
+    let totalPrice = 0;
+    const productDetails = yield Promise.all(products.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+        const product = yield bike_model_1.Bike.findById(item.product);
+        if (product) {
+            const subtotal = product ? (product.price || 0) * item.quantity : 0;
+            totalPrice += subtotal;
+            return item;
+        }
+    })));
+    let order = yield order_model_1.default.create({
+        user,
+        products: productDetails,
         totalPrice,
     });
-    // Reduce the product quantity
-    bike.quantity -= quantity;
-    if (bike.quantity === 0) {
-        bike.inStock = false;
+    // payment integration
+    const shurjopayPayload = {
+        amount: totalPrice,
+        order_id: order._id,
+        currency: 'BDT',
+        customer_name: user.name,
+        customer_address: 'abccv',
+        customer_email: 'dsgres',
+        customer_phone: 'sdgersrgh',
+        customer_city: 'rsdgersg',
+        client_ip,
+    };
+    const payment = yield order_utils_1.orderUtils.makePaymentAsync(shurjopayPayload);
+    console.log(payment.transactionStatus);
+    console_1.clear;
+    if (payment === null || payment === void 0 ? void 0 : payment.transactionStatus) {
+        order = yield order.updateOne({
+            transaction: {
+                id: payment.sp_order_id,
+                transactionStatus: payment.transactionStatus,
+            },
+        });
     }
-    // Save the updated product and order
-    yield bike.save();
-    const savedOrder = yield order.save();
-    return { success: true, data: savedOrder };
+    // console.log(payment.checkout_url);
+    return payment.checkout_url;
 });
 const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield order_model_1.Order.find();
+    const result = yield order_model_1.default.find();
     return result;
 });
 const getTotalRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const totalRevenue = yield order_model_1.Order.aggregate([
+        const totalRevenue = yield order_model_1.default.aggregate([
             //stage-1
             {
                 // Join orders with bikes to get bike details
@@ -89,8 +113,32 @@ const getTotalRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
 });
+const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const verifiedPayment = yield order_utils_1.orderUtils.verifyPaymentAsync(order_id);
+    if (verifiedPayment.length) {
+        yield order_model_1.default.findOneAndUpdate({
+            'transaction.id': order_id,
+        }, {
+            'transaction.bank_status': verifiedPayment[0].bank_status,
+            'transaction.sp_code': verifiedPayment[0].sp_code,
+            'transaction.sp_message': verifiedPayment[0].sp_message,
+            'transaction.transactionStatus': verifiedPayment[0].transaction_status,
+            'transaction.method': verifiedPayment[0].method,
+            'transaction.date_time': verifiedPayment[0].date_time,
+            status: verifiedPayment[0].bank_status == 'Success'
+                ? 'Paid'
+                : verifiedPayment[0].bank_status == 'Failed'
+                    ? 'Pending'
+                    : verifiedPayment[0].bank_status == 'Cancel'
+                        ? 'Cancelled'
+                        : '',
+        });
+    }
+    return verifiedPayment;
+});
 exports.OrderService = {
     createOrder,
     getAllOrders,
     getTotalRevenue,
+    verifyPayment,
 };

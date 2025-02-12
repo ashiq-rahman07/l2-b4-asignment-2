@@ -5,18 +5,16 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 
-const createBike =catchAsync(async (req, res) => {
-  const result = await BikeServices.createBikeIntoDB(req.file,req.body);
+const createBike = catchAsync(async (req, res) => {
+  const result = await BikeServices.createBikeIntoDB(req.file, req.body);
 
   sendResponse(res, {
     success: true,
     message: 'Bike created successfully',
     statusCode: httpStatus.OK,
     data: result,
+  });
 });
-})
-
-
 
 const getAllBikes = catchAsync(async (req, res) => {
   const result = await BikeServices.getAllBikesFromDB(req.query);
@@ -27,9 +25,7 @@ const getAllBikes = catchAsync(async (req, res) => {
     meta: result.meta,
     data: result.result,
   });
- 
 });
-
 
 const getSingleBike = async (req: Request, res: Response) => {
   try {

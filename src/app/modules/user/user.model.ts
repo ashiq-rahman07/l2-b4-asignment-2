@@ -1,3 +1,4 @@
+import  jwt  from 'jsonwebtoken';
 import { model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -26,7 +27,6 @@ const userSchema = new Schema(
       enum: ['admin', 'customer'],
       default: 'customer',
     },
-   
   },
   {
     timestamps: true,
@@ -65,5 +65,16 @@ userSchema.statics.isPasswordMatched = async function (
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
+// // Generate JWT token method
+// userSchema.methods.generateToken = function (): string {
+//   return jwt.sign(
+//     { email: this.email, role: this.role },
+//     config.jwt_access_secret!,
+//     {
+//       expiresIn: config.jwt_access_expires_in!,
+//     }
+//   );
+// };
+
 
 export const User = model<TUser, UserModel>('User', userSchema);

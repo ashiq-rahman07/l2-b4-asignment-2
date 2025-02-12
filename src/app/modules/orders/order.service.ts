@@ -1,4 +1,4 @@
-import  httpStatus  from 'http-status';
+import httpStatus from 'http-status';
 import { Bike } from '../products/bike.model';
 
 import { CreateOrderResponse, TOrder } from './order.interface';
@@ -13,11 +13,10 @@ import { clear } from 'console';
 const createOrder = async (
   user: TUser,
   payload: { products: { product: string; quantity: number }[] },
-  client_ip: string
+  client_ip: string,
 ) => {
-
   if (!payload?.products?.length)
-    throw new AppError(httpStatus.NOT_ACCEPTABLE, "Order is not specified");
+    throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
 
   const products = payload.products;
 
@@ -31,30 +30,31 @@ const createOrder = async (
         totalPrice += subtotal;
         return item;
       }
-    })
+    }),
   );
 
   let order = await Order.create({
     user,
     products: productDetails,
-    totalPrice
+    totalPrice,
   });
 
   // payment integration
   const shurjopayPayload = {
     amount: totalPrice,
     order_id: order._id,
-    currency: "BDT",
+    currency: 'BDT',
     customer_name: user.name,
-    customer_address: "abccv",
-    customer_email: "dsgres",
-    customer_phone: "sdgersrgh",
-    customer_city: "rsdgersg",
+    customer_address: 'abccv',
+    customer_email: 'dsgres',
+    customer_phone: 'sdgersrgh',
+    customer_city: 'rsdgersg',
     client_ip,
   };
 
   const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
-  console.log(payment.transactionStatus);clear
+  console.log(payment.transactionStatus);
+  clear;
 
   if (payment?.transactionStatus) {
     order = await order.updateOne({
@@ -125,24 +125,24 @@ const verifyPayment = async (order_id: string) => {
   if (verifiedPayment.length) {
     await Order.findOneAndUpdate(
       {
-        "transaction.id": order_id,
+        'transaction.id': order_id,
       },
       {
-        "transaction.bank_status": verifiedPayment[0].bank_status,
-        "transaction.sp_code": verifiedPayment[0].sp_code,
-        "transaction.sp_message": verifiedPayment[0].sp_message,
-        "transaction.transactionStatus": verifiedPayment[0].transaction_status,
-        "transaction.method": verifiedPayment[0].method,
-        "transaction.date_time": verifiedPayment[0].date_time,
+        'transaction.bank_status': verifiedPayment[0].bank_status,
+        'transaction.sp_code': verifiedPayment[0].sp_code,
+        'transaction.sp_message': verifiedPayment[0].sp_message,
+        'transaction.transactionStatus': verifiedPayment[0].transaction_status,
+        'transaction.method': verifiedPayment[0].method,
+        'transaction.date_time': verifiedPayment[0].date_time,
         status:
-          verifiedPayment[0].bank_status == "Success"
-            ? "Paid"
-            : verifiedPayment[0].bank_status == "Failed"
-            ? "Pending"
-            : verifiedPayment[0].bank_status == "Cancel"
-            ? "Cancelled"
-            : "",
-      }
+          verifiedPayment[0].bank_status == 'Success'
+            ? 'Paid'
+            : verifiedPayment[0].bank_status == 'Failed'
+              ? 'Pending'
+              : verifiedPayment[0].bank_status == 'Cancel'
+                ? 'Cancelled'
+                : '',
+      },
     );
   }
 
@@ -152,5 +152,5 @@ export const OrderService = {
   createOrder,
   getAllOrders,
   getTotalRevenue,
-  verifyPayment
+  verifyPayment,
 };

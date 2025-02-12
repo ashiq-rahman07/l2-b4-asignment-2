@@ -13,7 +13,7 @@ const bikeSchema = new Schema<TBike, BikeModel>(
       required: true,
     },
     description: { type: String, required: true },
-    bikeImg:{ type: String, required: true },
+    bikeImg: { type: String, required: true },
     quantity: { type: Number, required: true },
     inStock: { type: Boolean, required: true },
   },

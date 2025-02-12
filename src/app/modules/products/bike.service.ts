@@ -4,7 +4,7 @@ import { bikeSearchableFields } from './bike.constant';
 import { TBike } from './bike.interface';
 import { Bike } from './bike.model';
 
-const createBikeIntoDB = async (file:any,bikeData: TBike) => {
+const createBikeIntoDB = async (file: any, bikeData: TBike) => {
   if (file) {
     const imageName = `${bikeData?.brand}${bikeData?.name}`;
     const path = file?.path;
@@ -18,13 +18,12 @@ const createBikeIntoDB = async (file:any,bikeData: TBike) => {
 };
 
 const getAllBikesFromDB = async (query: Record<string, unknown>) => {
-
-    const bikeQuery = new QueryBuilder(Bike.find(),query).search(bikeSearchableFields)
+  const bikeQuery = new QueryBuilder(Bike.find(), query)
+    .search(bikeSearchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
-
 
   const meta = await bikeQuery.countTotal();
   const result = await bikeQuery.modelQuery;

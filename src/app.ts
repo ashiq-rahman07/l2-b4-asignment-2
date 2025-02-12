@@ -15,7 +15,6 @@ app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 // application routes
 app.use('/api/v1', router);
 
-
 app.get('/', (req, res) => {
   res.status(200).json({
     status: true,

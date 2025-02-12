@@ -7,21 +7,19 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import AppError from '../../errors/AppError';
 
-const createOrder = catchAsync(async(req,res)=>{
+const createOrder = catchAsync(async (req, res) => {
   const user = req.user;
   // console.log(user);
 
-    const order = await OrderService.createOrder(user, req.body, req.ip!);
-   
+  const order = await OrderService.createOrder(user, req.body, req.ip!);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Order created succesfully',
-      data: order
-    });
-})
-
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order created succesfully',
+    data: order,
+  });
+});
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {
@@ -65,16 +63,15 @@ const verifyPayment = catchAsync(async (req, res) => {
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
-    message: "Order verified successfully",
+    message: 'Order verified successfully',
     data: order,
     success: true,
   });
-
 });
 
 export const OrderControllers = {
   createOrder,
   getAllOrders,
   getTotalRevenue,
-  verifyPayment
+  verifyPayment,
 };

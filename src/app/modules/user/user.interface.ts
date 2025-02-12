@@ -2,10 +2,9 @@ import { Model, Types } from 'mongoose';
 
 const USER_ROLE = {
   admin: 'admin',
-  customer:"customer"
-}
+  customer: 'customer',
+};
 export interface TUser {
-
   name: string;
   email: string;
   password: string;

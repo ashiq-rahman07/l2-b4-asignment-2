@@ -14,43 +14,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BikeControllers = void 0;
 const bike_service_1 = require("./bike.service");
-const bike_validation_1 = __importDefault(require("./bike.validation"));
-const createBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const bikeData = req.body;
-        const zodBikeData = bike_validation_1.default.parse(bikeData);
-        const result = yield bike_service_1.BikeServices.createBikeIntoDB(zodBikeData);
-        res.status(200).json({
-            message: 'Bike is created succesfully',
-            status: true,
-            data: result,
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message || 'something went wrong',
-            error: err,
-        });
-    }
-});
-const getAllBikes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield bike_service_1.BikeServices.getAllBikesFromDB();
-        res.status(200).json({
-            message: 'Bikes are retrieved succesfully',
-            status: true,
-            data: result,
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message || 'something went wrong',
-            error: err,
-        });
-    }
-});
+const http_status_1 = __importDefault(require("http-status"));
+// import bikeValidationSchema from './bike.validation';
+const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const createBike = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield bike_service_1.BikeServices.createBikeIntoDB(req.file, req.body);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Bike created successfully',
+        statusCode: http_status_1.default.OK,
+        data: result,
+    });
+}));
+const getAllBikes = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield bike_service_1.BikeServices.getAllBikesFromDB(req.query);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Student are retrieved succesfully',
+        meta: result.meta,
+        data: result.result,
+    });
+}));
 const getSingleBike = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.params;

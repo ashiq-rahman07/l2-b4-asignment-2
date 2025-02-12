@@ -7,11 +7,11 @@ const registerUserIntoDB = async (payload: TUser) => {
 };
 
 const getAllUsers = async () => {
-  const result = User.find()
+  const result = User.find();
   return result;
-}
+};
 
 export const UserServices = {
   registerUserIntoDB,
-  getAllUsers
+  getAllUsers,
 };

@@ -6,8 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BikeRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const bike_controller_1 = require("./bike.controller");
+const sendImageToCloudinary_1 = require("../../utils/sendImageToCloudinary");
 const router = express_1.default.Router();
-router.post('/', bike_controller_1.BikeControllers.createBike);
+router.post('/create-product', sendImageToCloudinary_1.upload.single('file'), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+}, bike_controller_1.BikeControllers.createBike);
 router.get('/:productId', bike_controller_1.BikeControllers.getSingleBike);
 router.get('/', bike_controller_1.BikeControllers.getAllBikes);
 router.delete('/:productId', bike_controller_1.BikeControllers.deleteBike);
