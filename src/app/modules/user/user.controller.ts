@@ -11,11 +11,7 @@ const registerUserIntoDB = catchAsync(async (req, res) => {
     success: true,
     message: 'User registered successfully',
     statusCode: 201,
-    data: {
-      _id: result._id,
-      name: result.name,
-      email: result.email,
-    },
+    data: result
   });
 });
 

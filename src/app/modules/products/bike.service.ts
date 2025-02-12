@@ -1,3 +1,5 @@
+import QueryBuilder from '../../builder/QueryBuilder';
+import { bikeSearchableFields } from './bike.constant';
 import { TBike } from './bike.interface';
 import { Bike } from './bike.model';
 
@@ -6,9 +8,22 @@ const createBikeIntoDB = async (bikeData: TBike) => {
   return result;
 };
 
-const getAllBikesFromDB = async () => {
-  const result = await Bike.find();
-  return result;
+const getAllBikesFromDB = async (query: Record<string, unknown>) => {
+
+    const bikeQuery = new QueryBuilder(Bike.find(),query).search(bikeSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+
+  const meta = await bikeQuery.countTotal();
+  const result = await bikeQuery.modelQuery;
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleBike = async (id: string) => {

@@ -8,22 +8,17 @@ import sendResponse from '../../utils/sendResponse';
 import AppError from '../../errors/AppError';
 
 const createOrder = catchAsync(async(req,res)=>{
-    const result = await OrderService.createOrder(req.body);
+  const user = req.user;
+  // console.log(user);
+
+    const order = await OrderService.createOrder(user, req.body, req.ip!);
    
 
-    if(!result.success){
-    
-        throw new AppError(
-          httpStatus.BAD_REQUEST,
-          'Product can not find for this order',
-        );
-     
-    }
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Course is created succesfully',
-      data: result.data
+      message: 'Order created succesfully',
+      data: order
     });
 })
 
@@ -65,8 +60,21 @@ const getTotalRevenue = async (req: Request, res: Response) => {
   }
 };
 
+const verifyPayment = catchAsync(async (req, res) => {
+  const order = await OrderService.verifyPayment(req.query.order_id as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    message: "Order verified successfully",
+    data: order,
+    success: true,
+  });
+
+});
+
 export const OrderControllers = {
   createOrder,
   getAllOrders,
   getTotalRevenue,
+  verifyPayment
 };

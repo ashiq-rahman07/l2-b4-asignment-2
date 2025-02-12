@@ -1,10 +1,11 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 const USER_ROLE = {
   admin: 'admin',
   customer:"customer"
 }
 export interface TUser {
+
   name: string;
   email: string;
   password: string;

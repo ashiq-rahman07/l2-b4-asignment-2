@@ -12,19 +12,22 @@ const createBike =catchAsync(async (req, res) => {
     success: true,
     message: 'Bike created successfully',
     statusCode: httpStatus.OK,
-    data: result
+    data: result,
 });
-});
+})
+
+
 
 const getAllBikes = catchAsync(async (req, res) => {
-  const result = await BikeServices.getAllBikesFromDB();
-
+  const result = await BikeServices.getAllBikesFromDB(req.query);
   sendResponse(res, {
-    success: true,
-    message: 'Bike retrive successfully',
     statusCode: httpStatus.OK,
-    data: result
-});
+    success: true,
+    message: 'Student are retrieved succesfully',
+    meta: result.meta,
+    data: result.result,
+  });
+ 
 });
 
 
