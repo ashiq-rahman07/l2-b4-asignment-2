@@ -1,9 +1,18 @@
 import QueryBuilder from '../../builder/QueryBuilder';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import { bikeSearchableFields } from './bike.constant';
 import { TBike } from './bike.interface';
 import { Bike } from './bike.model';
 
-const createBikeIntoDB = async (bikeData: TBike) => {
+const createBikeIntoDB = async (file:any,bikeData: TBike) => {
+  if (file) {
+    const imageName = `${bikeData?.brand}${bikeData?.name}`;
+    const path = file?.path;
+
+    //send image to cloudinary
+    const { secure_url } = await sendImageToCloudinary(imageName, path);
+    bikeData.bikeImg = secure_url as string;
+  }
   const result = await Bike.create(bikeData);
   return result;
 };

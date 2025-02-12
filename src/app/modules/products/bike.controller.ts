@@ -6,7 +6,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 
 const createBike =catchAsync(async (req, res) => {
-  const result = await BikeServices.createBikeIntoDB(req.body);
+  const result = await BikeServices.createBikeIntoDB(req.file,req.body);
 
   sendResponse(res, {
     success: true,
