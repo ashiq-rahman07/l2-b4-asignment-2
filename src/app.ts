@@ -10,7 +10,7 @@ const app: Application = express();
 
 //parsers
 app.use(express.json());
-app.use(cors({ origin: ['https://classic-rider.netlify.app/'], credentials: true }));
+app.use(cors({ origin: 'https://bikeshop-frontend.vercel.app/' }));
 
 // application routes
 app.use('/api/v1', router);
