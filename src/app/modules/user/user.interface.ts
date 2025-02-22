@@ -9,7 +9,9 @@ export interface TUser {
   email: string;
   password: string;
   role: 'admin' | 'customer';
-  isBlocked: boolean;
+  isActive:boolean,
+  phone: string;
+  address: string;
 }
 
 export interface UserModel extends Model<TUser> {

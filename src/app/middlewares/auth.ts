@@ -27,9 +27,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const { userId, role } = decoded;
 
     //   checking if the user is exist
-    const user = await User.isUserExists(userId);
+   
+      req.user = await User.findById(userId).select('-password')
     //    console.log(user);
-    if (!user) {
+    if (!req.user) {
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
     }
     // checking if the user is already deleted
@@ -48,7 +49,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     // req.user = decoded as JwtPayload;
-    req.user = user;
+    // req.user = {user,userId };
     next();
   });
 };

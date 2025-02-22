@@ -70,4 +70,14 @@ userSchema.statics.isPasswordMatched = function (plainTextPassword, hashedPasswo
         return yield bcrypt_1.default.compare(plainTextPassword, hashedPassword);
     });
 };
+// // Generate JWT token method
+// userSchema.methods.generateToken = function (): string {
+//   return jwt.sign(
+//     { email: this.email, role: this.role },
+//     config.jwt_access_secret!,
+//     {
+//       expiresIn: config.jwt_access_expires_in!,
+//     }
+//   );
+// };
 exports.User = (0, mongoose_1.model)('User', userSchema);

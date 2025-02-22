@@ -10,7 +10,7 @@ const createBike = catchAsync(async (req, res) => {
 
   sendResponse(res, {
     success: true,
-    message: 'Bike created successfully',
+    message: 'Product are created successfully',
     statusCode: httpStatus.OK,
     data: result,
   });
@@ -21,7 +21,7 @@ const getAllBikes = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Student are retrieved succesfully',
+    message: 'Product are retrieved succesfully',
     meta: result.meta,
     data: result.result,
   });

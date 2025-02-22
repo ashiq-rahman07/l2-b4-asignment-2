@@ -9,17 +9,47 @@ import AppError from '../../errors/AppError';
 import { orderUtils } from './order.utils';
 import Order from './order.model';
 import { clear } from 'console';
+import { TBike } from '../products/bike.interface';
 
 const createOrder = async (
   user: TUser,
   payload: { products: { product: string; quantity: number }[] },
   client_ip: string,
 ) => {
+  
   if (!payload?.products?.length)
     throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
 
+try {
+  
   const products = payload.products;
+  // console.log(products);
+   // Validate items and check stock
+   for (const bike of products) {
+    // console.log(product);
+    console.log(bike);
+    const product= await Bike.findById(bike.product);
+   
+    if (!product) {
+    return  new AppError(
+      401, 
+      'product not found' 
+      
+      )
+    }
 
+  
+
+    await Bike.findByIdAndUpdate(bike.product, {
+      $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+    });
+  }
+
+  // for (const bike of products) {
+  //   await Bike.findByIdAndUpdate(bike.product, {
+  //     $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+  //   });
+  // }
   let totalPrice = 0;
 
   const productDetails = await Promise.all(
@@ -53,8 +83,7 @@ const createOrder = async (
   };
 
   const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
-  console.log(payment.transactionStatus);
-  clear;
+
 
   if (payment?.transactionStatus) {
     order = await order.updateOne({
@@ -66,10 +95,20 @@ const createOrder = async (
   }
   // console.log(payment.checkout_url);
   return payment.checkout_url;
+
+} catch (error) {
+  
+}
+ 
 };
 
 const getAllOrders = async () => {
   const result = await Order.find();
+  return result;
+};
+
+const getUserOrders = async (userId:string) => {
+  const result = await Order.find({user:userId});
   return result;
 };
 
@@ -148,9 +187,48 @@ const verifyPayment = async (order_id: string) => {
 
   return verifiedPayment;
 };
+
+const getSingleOrder = async (id: string) => {
+  const result = Order.findById(id);
+  return result;
+};
+
+const updateOrder = async (id:string,payload:Partial<TUser>) => {
+  const updateUser = Order.findByIdAndUpdate(id,payload ,{
+    new: true,
+    runValidators: true,
+    
+  },);
+  return updateUser;
+};
+
+const updateOrderStatus = async (id:string,payload:Partial<TOrder>) => {
+  console.log(id,payload)
+  const updatedUser = await Order.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  return updatedUser;
+};
+const deleteOrder = async (id:string) => {
+  const updateUser = Order.findByIdAndDelete(id);
+  return updateUser
+  
+
+};
+
 export const OrderService = {
   createOrder,
+  getUserOrders,
   getAllOrders,
   getTotalRevenue,
   verifyPayment,
+  getSingleOrder,
+  updateOrder,
+  deleteOrder,
+  updateOrderStatus
 };

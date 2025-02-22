@@ -11,4 +11,5 @@ const orderValidationSchema = z.object({
   totalPrice: z.number().min(0), // Total price must be non-negative
 });
 
+
 export default orderValidationSchema;

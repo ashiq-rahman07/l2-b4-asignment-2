@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthServices = void 0;
-const config_1 = __importDefault(require("../../config"));
 const http_status_1 = __importDefault(require("http-status"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const user_model_1 = require("../user/user.model");
@@ -42,7 +41,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         userId: user._id,
         role: user.role,
     };
-    const accessToken = (0, auth_utils_1.createToken)(jwtPayload, config_1.default.jwt_access_secret, config_1.default.jwt_access_expires_in);
+    const accessToken = (0, auth_utils_1.createToken)(jwtPayload);
     // const refreshToken = createToken(
     //   jwtPayload,
     //   config.jwt_refresh_secret as string,

@@ -3,6 +3,7 @@ import { model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import { TUser, UserModel } from './user.interface';
+import { boolean } from 'zod';
 
 const userSchema = new Schema(
   {
@@ -27,6 +28,19 @@ const userSchema = new Schema(
       enum: ['admin', 'customer'],
       default: 'customer',
     },
+    isActive:{
+      type:Boolean,
+      default:true,
+    },
+    phone:{
+      type: String,
+      default: 'Update your phone no'
+    },
+    address:{
+      type: String,
+      default: 'Update your address'
+    }
+
   },
   {
     timestamps: true,

@@ -9,7 +9,9 @@ import AppError from '../../errors/AppError';
 
 const createOrder = catchAsync(async (req, res) => {
   const user = req.user;
-  // console.log(user);
+
+  
+
 
   const order = await OrderService.createOrder(user, req.body, req.ip!);
 
@@ -23,7 +25,27 @@ const createOrder = catchAsync(async (req, res) => {
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {
+    
     const result = await OrderService.getAllOrders();
+
+    res.status(200).json({
+      message: 'Orders are retrieved succesfully',
+      status: true,
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message || 'something went wrong',
+      error: err,
+    });
+  }
+};
+
+const getUserOrders = async (req: Request, res: Response) => {
+  try {
+    
+    const result = await OrderService.getUserOrders(req.user._id);
 
     res.status(200).json({
       message: 'Orders are retrieved succesfully',
@@ -69,9 +91,62 @@ const verifyPayment = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUsers = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await OrderService.getSingleOrder(id);
+
+  sendResponse(res, {
+    success: true,
+    message: 'Order retrieve successfully',
+    statusCode: 201,
+    data: result,
+  });
+});
+const updateOrder = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await OrderService.updateOrder(id,req.body);
+
+  sendResponse(res, {
+    success: true,
+    message: 'Order update successfully',
+    statusCode: 201,
+    data: result,
+  });
+});
+
+const updateOrderStatus = catchAsync(async (req, res) => {
+  const {orderId}  = req.params;
+ 
+  const result = await OrderService.updateOrderStatus(orderId,req.body);
+
+  sendResponse(res, {
+    success: true,
+    message: 'User update successfully',
+    statusCode: 201,
+    data: result,
+  });
+});
+
+const deleteUser  = catchAsync(async (req, res) => {
+  const { orderId } = req.params;
+  await OrderService.deleteOrder(orderId);
+
+  sendResponse(res, {
+    success: true,
+    message: 'Order delete successfully',
+    statusCode: 201,
+    data:null,
+  });
+});
+
 export const OrderControllers = {
   createOrder,
+  getUserOrders,
   getAllOrders,
   getTotalRevenue,
   verifyPayment,
+  getSingleUsers,
+  updateOrder,
+  deleteUser,
+  updateOrderStatus
 };
