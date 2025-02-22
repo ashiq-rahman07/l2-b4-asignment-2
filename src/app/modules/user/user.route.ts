@@ -11,14 +11,10 @@ router.post(
   validateRequest(UserValidation.userRegisterValidationSchema),
   UserControllers.registerUserIntoDB,
 );
-router.get(
-  '/:id',
-  auth('admin','customer'),
-  UserControllers.getSingleUsers,
-);
+router.get('/:id', auth('admin', 'customer'), UserControllers.getSingleUsers);
 router.patch(
   '/:id',
-  auth('admin','customer'),
+  auth('admin', 'customer'),
   validateRequest(UserValidation.userUpdateValidationSchema),
   UserControllers.updateUser,
 );
@@ -28,15 +24,10 @@ router.patch(
   validateRequest(UserValidation.userUpdateValidationSchema),
   UserControllers.updateUserStatus,
 );
-router.delete(
-  '/:id',
-  auth('admin'),
-  UserControllers.deleteUser,
+router.delete('/:id', auth('admin'), UserControllers.deleteUser);
+router.get('/', auth('admin', 'customer'), UserControllers.getAllUsers);
+router.patch(
+  '/update/:id',
+  validateRequest(UserValidation.userUpdateValidationSchema),
 );
-router.get(
-  '/',
-  auth('admin','customer'),
-  UserControllers.getAllUsers,
-);
-router.patch('/update/:id',validateRequest(UserValidation.userUpdateValidationSchema))
 export const UserRoutes = router;

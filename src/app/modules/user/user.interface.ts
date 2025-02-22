@@ -9,7 +9,7 @@ export interface TUser {
   email: string;
   password: string;
   role: 'admin' | 'customer';
-  isActive:boolean,
+  isActive: boolean;
   phone: string;
   address: string;
 }

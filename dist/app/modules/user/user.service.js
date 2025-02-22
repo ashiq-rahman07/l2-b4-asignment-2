@@ -19,7 +19,36 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = user_model_1.User.find();
     return result;
 });
+const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = user_model_1.User.findById(id).select('-password');
+    return result;
+});
+const updateUser = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(id, payload);
+    const updateUser = user_model_1.User.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    });
+    return updateUser;
+});
+const updateUserStatus = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(id,payload)
+    const updatedUser = yield user_model_1.User.findByIdAndUpdate(id, { $set: payload }, {
+        new: true,
+        runValidators: true,
+    });
+    return updatedUser;
+});
+const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(id);
+    const updateUser = user_model_1.User.findByIdAndDelete(id);
+    return updateUser;
+});
 exports.UserServices = {
     registerUserIntoDB,
     getAllUsers,
+    updateUser,
+    deleteUser,
+    getSingleUser,
+    updateUserStatus,
 };

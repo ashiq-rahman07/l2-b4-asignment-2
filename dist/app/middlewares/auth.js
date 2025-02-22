@@ -31,9 +31,9 @@ const auth = (...requiredRoles) => {
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.jwt_access_secret);
         const { userId, role } = decoded;
         //   checking if the user is exist
-        const user = yield user_model_1.User.isUserExists(userId);
+        req.user = yield user_model_1.User.findById(userId).select('-password');
         //    console.log(user);
-        if (!user) {
+        if (!req.user) {
             throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found !');
         }
         // checking if the user is already deleted
@@ -45,7 +45,7 @@ const auth = (...requiredRoles) => {
             throw new AppError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized  hi!');
         }
         // req.user = decoded as JwtPayload;
-        req.user = user;
+        // req.user = {user,userId };
         next();
     }));
 };

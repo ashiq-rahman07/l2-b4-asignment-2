@@ -20,7 +20,6 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    // console.log(user);
     const order = yield order_service_1.OrderService.createOrder(user, req.body, req.ip);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
@@ -32,6 +31,23 @@ const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield order_service_1.OrderService.getAllOrders();
+        res.status(200).json({
+            message: 'Orders are retrieved succesfully',
+            status: true,
+            data: result,
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message || 'something went wrong',
+            error: err,
+        });
+    }
+});
+const getUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield order_service_1.OrderService.getUserOrders(req.user._id);
         res.status(200).json({
             message: 'Orders are retrieved succesfully',
             status: true,
@@ -74,9 +90,54 @@ const verifyPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         success: true,
     });
 }));
+const getSingleUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield order_service_1.OrderService.getSingleOrder(id);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Order retrieve successfully',
+        statusCode: 201,
+        data: result,
+    });
+}));
+const updateOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield order_service_1.OrderService.updateOrder(id, req.body);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Order update successfully',
+        statusCode: 201,
+        data: result,
+    });
+}));
+const updateOrderStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { orderId } = req.params;
+    const result = yield order_service_1.OrderService.updateOrderStatus(orderId, req.body);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'User update successfully',
+        statusCode: 201,
+        data: result,
+    });
+}));
+const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { orderId } = req.params;
+    yield order_service_1.OrderService.deleteOrder(orderId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Order delete successfully',
+        statusCode: 201,
+        data: null,
+    });
+}));
 exports.OrderControllers = {
     createOrder,
+    getUserOrders,
     getAllOrders,
     getTotalRevenue,
     verifyPayment,
+    getSingleUsers,
+    updateOrder,
+    deleteUser,
+    updateOrderStatus,
 };

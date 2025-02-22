@@ -1,4 +1,4 @@
-import  jwt  from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { model, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -28,19 +28,18 @@ const userSchema = new Schema(
       enum: ['admin', 'customer'],
       default: 'customer',
     },
-    isActive:{
-      type:Boolean,
-      default:true,
+    isActive: {
+      type: Boolean,
+      default: true,
     },
-    phone:{
+    phone: {
       type: String,
-      default: 'Update your phone no'
+      default: 'Update your phone no',
     },
-    address:{
+    address: {
       type: String,
-      default: 'Update your address'
-    }
-
+      default: 'Update your address',
+    },
   },
   {
     timestamps: true,
@@ -89,6 +88,5 @@ userSchema.statics.isPasswordMatched = async function (
 //     }
 //   );
 // };
-
 
 export const User = model<TUser, UserModel>('User', userSchema);

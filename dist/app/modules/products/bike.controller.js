@@ -22,7 +22,7 @@ const createBike = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     const result = yield bike_service_1.BikeServices.createBikeIntoDB(req.file, req.body);
     (0, sendResponse_1.default)(res, {
         success: true,
-        message: 'Bike created successfully',
+        message: 'Product are created successfully',
         statusCode: http_status_1.default.OK,
         data: result,
     });
@@ -32,7 +32,7 @@ const getAllBikes = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Student are retrieved succesfully',
+        message: 'Product are retrieved succesfully',
         meta: result.meta,
         data: result.result,
     });

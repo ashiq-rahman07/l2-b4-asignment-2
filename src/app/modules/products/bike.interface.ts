@@ -1,10 +1,9 @@
 import { Model } from 'mongoose';
 
-
 // Yamaha · Honda · Suzuki · Hero · Tvs · Bajaj · Lifan ·
 export type TBike = {
   name: string;
-  brand: 'Yamaha' | 'Honda' | 'Suzuki' | 'Hero'|'Tvs'|'Bajaj';
+  brand: 'Yamaha' | 'Honda' | 'Suzuki' | 'Hero' | 'Tvs' | 'Bajaj';
   model: string;
   price: number;
   category: 'Mountain' | 'Road' | 'Hybrid' | 'Electric';

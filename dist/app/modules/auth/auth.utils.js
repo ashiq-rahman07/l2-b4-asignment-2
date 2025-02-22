@@ -9,7 +9,7 @@ const config_1 = __importDefault(require("../../config"));
 const secret = config_1.default.jwt_access_secret; // Replace with your actual secret or private key
 const options = {
     expiresIn: '1D', // Token expires in 1 hour
-    algorithm: 'HS256' // Specify the algorithm (optional)
+    algorithm: 'HS256', // Specify the algorithm (optional)
 };
 const createToken = (jwtPayload) => {
     return jsonwebtoken_1.default.sign(jwtPayload, secret, options);

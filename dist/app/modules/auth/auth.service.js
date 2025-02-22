@@ -13,7 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthServices = void 0;
+const config_1 = __importDefault(require("../../config"));
 const http_status_1 = __importDefault(require("http-status"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const user_model_1 = require("../user/user.model");
 const auth_utils_1 = require("./auth.utils");
@@ -51,6 +53,26 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken,
     };
 });
+const changePassword = (userData, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(userData)
+    const user = yield user_model_1.User.findById({ _id: userData._id });
+    console.log(user);
+    if (!user) {
+        throw new AppError_1.default(http_status_1.default.NOT_FOUND, 'This user is not found !');
+    }
+    if (!(yield user_model_1.User.isPasswordMatched(payload.oldPassword, user === null || user === void 0 ? void 0 : user.password)))
+        throw new AppError_1.default(http_status_1.default.FORBIDDEN, 'Password do not matched');
+    //hash new password
+    const newHashedPassword = yield bcrypt_1.default.hash(payload.newPassword, Number(config_1.default.bcrypt_salt_rounds));
+    yield user_model_1.User.findByIdAndUpdate({
+        _id: userData._id,
+        role: userData.role,
+    }, {
+        password: newHashedPassword,
+    });
+    return null;
+});
 exports.AuthServices = {
     loginUser,
+    changePassword,
 };

@@ -16,90 +16,77 @@ const createOrder = async (
   payload: { products: { product: string; quantity: number }[] },
   client_ip: string,
 ) => {
-  
   if (!payload?.products?.length)
     throw new AppError(httpStatus.NOT_ACCEPTABLE, 'Order is not specified');
 
-try {
-  
-  const products = payload.products;
- 
-   // Validate items and check stock
-   for (const bike of products) {
-   
-  
-    const product= await Bike.findById(bike.product);
-   
-    if (!product) {
-    return  new AppError(
-      401, 
-      'product not found' 
-      
-      )
+  try {
+    const products = payload.products;
+
+    // Validate items and check stock
+    for (const bike of products) {
+      const product = await Bike.findById(bike.product);
+
+      if (!product) {
+        return new AppError(401, 'product not found');
+      }
+
+      await Bike.findByIdAndUpdate(bike.product, {
+        $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+      });
     }
 
-  
+    // for (const bike of products) {
+    //   await Bike.findByIdAndUpdate(bike.product, {
+    //     $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+    //   });
+    // }
+    let totalPrice = 0;
 
-    await Bike.findByIdAndUpdate(bike.product, {
-      $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+    const productDetails = await Promise.all(
+      products.map(async (item) => {
+        const product = await Bike.findById(item.product);
+        if (product) {
+          const subtotal = product ? (product.price || 0) * item.quantity : 0;
+          totalPrice += subtotal;
+          return item;
+        }
+      }),
+    );
+
+    let order = await Order.create({
+      user,
+      products: productDetails,
+      totalPrice,
     });
+
+    // payment integration
+    const shurjopayPayload = {
+      amount: totalPrice,
+      order_id: order._id,
+      currency: 'BDT',
+      customer_name: user.name,
+      customer_address: 'abccv',
+      customer_email: 'dsgres',
+      customer_phone: 'sdgersrgh',
+      customer_city: 'rsdgersg',
+      client_ip,
+    };
+
+    const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
+
+    if (payment?.transactionStatus) {
+      order = await order.updateOne({
+        transaction: {
+          id: payment.sp_order_id,
+          transactionStatus: payment.transactionStatus,
+        },
+      });
+    }
+
+    return payment.checkout_url;
+  } catch (error) {
+    console.log(error);
   }
-
-  // for (const bike of products) {
-  //   await Bike.findByIdAndUpdate(bike.product, {
-  //     $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
-  //   });
-  // }
-  let totalPrice = 0;
-
-  const productDetails = await Promise.all(
-    products.map(async (item) => {
-      const product = await Bike.findById(item.product);
-      if (product) {
-        const subtotal = product ? (product.price || 0) * item.quantity : 0;
-        totalPrice += subtotal;
-        return item;
-      }
-    }),
-  );
-
-  let order = await Order.create({
-    user,
-    products: productDetails,
-    totalPrice,
-  });
-
-  // payment integration
-  const shurjopayPayload = {
-    amount: totalPrice,
-    order_id: order._id,
-    currency: 'BDT',
-    customer_name: user.name,
-    customer_address: 'abccv',
-    customer_email: 'dsgres',
-    customer_phone: 'sdgersrgh',
-    customer_city: 'rsdgersg',
-    client_ip,
-  };
-
-  const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
-
-
-  if (payment?.transactionStatus) {
-    order = await order.updateOne({
-      transaction: {
-        id: payment.sp_order_id,
-        transactionStatus: payment.transactionStatus,
-      },
-    });
-  }
- 
-  return payment.checkout_url;
-
-} catch (error) {
-  console.log(error)
-}
- 
 };
 
 const getAllOrders = async () => {
@@ -107,8 +94,8 @@ const getAllOrders = async () => {
   return result;
 };
 
-const getUserOrders = async (userId:string) => {
-  const result = await Order.find({user:userId});
+const getUserOrders = async (userId: string) => {
+  const result = await Order.find({ user: userId });
   return result;
 };
 
@@ -193,32 +180,28 @@ const getSingleOrder = async (id: string) => {
   return result;
 };
 
-const updateOrder = async (id:string,payload:Partial<TUser>) => {
-  const updateUser = Order.findByIdAndUpdate(id,payload ,{
+const updateOrder = async (id: string, payload: Partial<TUser>) => {
+  const updateUser = Order.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
-    
-  },);
+  });
   return updateUser;
 };
 
-const updateOrderStatus = async (id:string,payload:Partial<TOrder>) => {
- 
+const updateOrderStatus = async (id: string, payload: Partial<TOrder>) => {
   const updatedUser = await Order.findByIdAndUpdate(
     id,
     { $set: payload },
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
   return updatedUser;
 };
-const deleteOrder = async (id:string) => {
+const deleteOrder = async (id: string) => {
   const updateUser = Order.findByIdAndDelete(id);
-  return updateUser
-  
-
+  return updateUser;
 };
 
 export const OrderService = {
@@ -230,5 +213,5 @@ export const OrderService = {
   getSingleOrder,
   updateOrder,
   deleteOrder,
-  updateOrderStatus
+  updateOrderStatus,
 };

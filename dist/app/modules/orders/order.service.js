@@ -18,54 +18,74 @@ const bike_model_1 = require("../products/bike.model");
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const order_utils_1 = require("./order.utils");
 const order_model_1 = __importDefault(require("./order.model"));
-const console_1 = require("console");
 const createOrder = (user, payload, client_ip) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     if (!((_a = payload === null || payload === void 0 ? void 0 : payload.products) === null || _a === void 0 ? void 0 : _a.length))
         throw new AppError_1.default(http_status_1.default.NOT_ACCEPTABLE, 'Order is not specified');
-    const products = payload.products;
-    let totalPrice = 0;
-    const productDetails = yield Promise.all(products.map((item) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield bike_model_1.Bike.findById(item.product);
-        if (product) {
-            const subtotal = product ? (product.price || 0) * item.quantity : 0;
-            totalPrice += subtotal;
-            return item;
+    try {
+        const products = payload.products;
+        // Validate items and check stock
+        for (const bike of products) {
+            const product = yield bike_model_1.Bike.findById(bike.product);
+            if (!product) {
+                return new AppError_1.default(401, 'product not found');
+            }
+            yield bike_model_1.Bike.findByIdAndUpdate(bike.product, {
+                $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+            });
         }
-    })));
-    let order = yield order_model_1.default.create({
-        user,
-        products: productDetails,
-        totalPrice,
-    });
-    // payment integration
-    const shurjopayPayload = {
-        amount: totalPrice,
-        order_id: order._id,
-        currency: 'BDT',
-        customer_name: user.name,
-        customer_address: 'abccv',
-        customer_email: 'dsgres',
-        customer_phone: 'sdgersrgh',
-        customer_city: 'rsdgersg',
-        client_ip,
-    };
-    const payment = yield order_utils_1.orderUtils.makePaymentAsync(shurjopayPayload);
-    console.log(payment.transactionStatus);
-    console_1.clear;
-    if (payment === null || payment === void 0 ? void 0 : payment.transactionStatus) {
-        order = yield order.updateOne({
-            transaction: {
-                id: payment.sp_order_id,
-                transactionStatus: payment.transactionStatus,
-            },
+        // for (const bike of products) {
+        //   await Bike.findByIdAndUpdate(bike.product, {
+        //     $inc: { quantity: -bike.quantity }, // Reduce stock by the ordered quantity
+        //   });
+        // }
+        let totalPrice = 0;
+        const productDetails = yield Promise.all(products.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+            const product = yield bike_model_1.Bike.findById(item.product);
+            if (product) {
+                const subtotal = product ? (product.price || 0) * item.quantity : 0;
+                totalPrice += subtotal;
+                return item;
+            }
+        })));
+        let order = yield order_model_1.default.create({
+            user,
+            products: productDetails,
+            totalPrice,
         });
+        // payment integration
+        const shurjopayPayload = {
+            amount: totalPrice,
+            order_id: order._id,
+            currency: 'BDT',
+            customer_name: user.name,
+            customer_address: 'abccv',
+            customer_email: 'dsgres',
+            customer_phone: 'sdgersrgh',
+            customer_city: 'rsdgersg',
+            client_ip,
+        };
+        const payment = yield order_utils_1.orderUtils.makePaymentAsync(shurjopayPayload);
+        if (payment === null || payment === void 0 ? void 0 : payment.transactionStatus) {
+            order = yield order.updateOne({
+                transaction: {
+                    id: payment.sp_order_id,
+                    transactionStatus: payment.transactionStatus,
+                },
+            });
+        }
+        return payment.checkout_url;
     }
-    // console.log(payment.checkout_url);
-    return payment.checkout_url;
+    catch (error) {
+        console.log(error);
+    }
 });
 const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield order_model_1.default.find();
+    return result;
+});
+const getUserOrders = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield order_model_1.default.find({ user: userId });
     return result;
 });
 const getTotalRevenue = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -136,9 +156,36 @@ const verifyPayment = (order_id) => __awaiter(void 0, void 0, void 0, function* 
     }
     return verifiedPayment;
 });
+const getSingleOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = order_model_1.default.findById(id);
+    return result;
+});
+const updateOrder = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateUser = order_model_1.default.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    });
+    return updateUser;
+});
+const updateOrderStatus = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedUser = yield order_model_1.default.findByIdAndUpdate(id, { $set: payload }, {
+        new: true,
+        runValidators: true,
+    });
+    return updatedUser;
+});
+const deleteOrder = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateUser = order_model_1.default.findByIdAndDelete(id);
+    return updateUser;
+});
 exports.OrderService = {
     createOrder,
+    getUserOrders,
     getAllOrders,
     getTotalRevenue,
     verifyPayment,
+    getSingleOrder,
+    updateOrder,
+    deleteOrder,
+    updateOrderStatus,
 };

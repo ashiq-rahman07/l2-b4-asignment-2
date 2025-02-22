@@ -10,9 +10,6 @@ import AppError from '../../errors/AppError';
 const createOrder = catchAsync(async (req, res) => {
   const user = req.user;
 
-  
-
-
   const order = await OrderService.createOrder(user, req.body, req.ip!);
 
   sendResponse(res, {
@@ -25,7 +22,6 @@ const createOrder = catchAsync(async (req, res) => {
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {
-    
     const result = await OrderService.getAllOrders();
 
     res.status(200).json({
@@ -44,7 +40,6 @@ const getAllOrders = async (req: Request, res: Response) => {
 
 const getUserOrders = async (req: Request, res: Response) => {
   try {
-    
     const result = await OrderService.getUserOrders(req.user._id);
 
     res.status(200).json({
@@ -104,7 +99,7 @@ const getSingleUsers = catchAsync(async (req, res) => {
 });
 const updateOrder = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await OrderService.updateOrder(id,req.body);
+  const result = await OrderService.updateOrder(id, req.body);
 
   sendResponse(res, {
     success: true,
@@ -115,9 +110,9 @@ const updateOrder = catchAsync(async (req, res) => {
 });
 
 const updateOrderStatus = catchAsync(async (req, res) => {
-  const {orderId}  = req.params;
- 
-  const result = await OrderService.updateOrderStatus(orderId,req.body);
+  const { orderId } = req.params;
+
+  const result = await OrderService.updateOrderStatus(orderId, req.body);
 
   sendResponse(res, {
     success: true,
@@ -127,7 +122,7 @@ const updateOrderStatus = catchAsync(async (req, res) => {
   });
 });
 
-const deleteUser  = catchAsync(async (req, res) => {
+const deleteUser = catchAsync(async (req, res) => {
   const { orderId } = req.params;
   await OrderService.deleteOrder(orderId);
 
@@ -135,7 +130,7 @@ const deleteUser  = catchAsync(async (req, res) => {
     success: true,
     message: 'Order delete successfully',
     statusCode: 201,
-    data:null,
+    data: null,
   });
 });
 
@@ -148,5 +143,5 @@ export const OrderControllers = {
   getSingleUsers,
   updateOrder,
   deleteUser,
-  updateOrderStatus
+  updateOrderStatus,
 };

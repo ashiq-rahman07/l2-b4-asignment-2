@@ -1,4 +1,4 @@
-import httpStatus  from 'http-status';
+import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -17,19 +17,18 @@ const getAllUsers = async () => {
 };
 const getSingleUser = async (id: string) => {
   const result = User.findById(id).select('-password');
-  return result
+  return result;
 };
 
-const updateUser = async (id:string,payload:Partial<TUser>) => {
-  console.log(id,payload)
-  const updateUser = User.findByIdAndUpdate(id,payload ,{
+const updateUser = async (id: string, payload: Partial<TUser>) => {
+  console.log(id, payload);
+  const updateUser = User.findByIdAndUpdate(id, payload, {
     new: true,
     runValidators: true,
-    
-  },);
+  });
   return updateUser;
 };
-const updateUserStatus = async (id:string,payload:Partial<TUser>) => {
+const updateUserStatus = async (id: string, payload: Partial<TUser>) => {
   // console.log(id,payload)
   const updatedUser = await User.findByIdAndUpdate(
     id,
@@ -37,19 +36,15 @@ const updateUserStatus = async (id:string,payload:Partial<TUser>) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
   return updatedUser;
 };
-const deleteUser = async (id:string) => {
-  console.log(id)
+const deleteUser = async (id: string) => {
+  console.log(id);
   const updateUser = User.findByIdAndDelete(id);
-  return updateUser
-  
-
+  return updateUser;
 };
-
-
 
 export const UserServices = {
   registerUserIntoDB,
@@ -57,6 +52,6 @@ export const UserServices = {
   updateUser,
   deleteUser,
   getSingleUser,
-  
-  updateUserStatus
+
+  updateUserStatus,
 };

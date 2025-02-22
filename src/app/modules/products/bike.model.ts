@@ -2,13 +2,12 @@ import { model, Schema } from 'mongoose';
 import { BikeModel, TBike } from './bike.interface';
 
 const bikeSchema = new Schema<TBike, BikeModel>(
-  
   {
     name: { type: String, required: true },
-    brand: { 
+    brand: {
       type: String,
-      enum: ['Yamaha' , 'Honda' ,'Suzuki' , 'Hero','Tvs','Bajaj'],
-       required: true 
+      enum: ['Yamaha', 'Honda', 'Suzuki', 'Hero', 'Tvs', 'Bajaj'],
+      required: true,
     },
     price: { type: Number, required: true },
     model: { type: String, required: true },
@@ -21,9 +20,9 @@ const bikeSchema = new Schema<TBike, BikeModel>(
     bikeImg: { type: String, required: true },
     quantity: { type: Number, required: true },
     inStock: {
-       type: Boolean, 
-      default: true
-       },
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

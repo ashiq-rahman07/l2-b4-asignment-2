@@ -38,6 +38,18 @@ const userSchema = new mongoose_1.Schema({
         enum: ['admin', 'customer'],
         default: 'customer',
     },
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
+    phone: {
+        type: String,
+        default: 'Update your phone no',
+    },
+    address: {
+        type: String,
+        default: 'Update your address',
+    },
 }, {
     timestamps: true,
 });
