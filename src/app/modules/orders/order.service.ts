@@ -23,11 +23,11 @@ const createOrder = async (
 try {
   
   const products = payload.products;
-  // console.log(products);
+ 
    // Validate items and check stock
    for (const bike of products) {
-    // console.log(product);
-    console.log(bike);
+   
+  
     const product= await Bike.findById(bike.product);
    
     if (!product) {
@@ -93,11 +93,11 @@ try {
       },
     });
   }
-  // console.log(payment.checkout_url);
+ 
   return payment.checkout_url;
 
 } catch (error) {
-  
+  console.log(error)
 }
  
 };
@@ -203,7 +203,7 @@ const updateOrder = async (id:string,payload:Partial<TUser>) => {
 };
 
 const updateOrderStatus = async (id:string,payload:Partial<TOrder>) => {
-  console.log(id,payload)
+ 
   const updatedUser = await Order.findByIdAndUpdate(
     id,
     { $set: payload },
