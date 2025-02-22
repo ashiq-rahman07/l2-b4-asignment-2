@@ -11,7 +11,7 @@ const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const app = (0, express_1.default)();
 //parsers
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({ origin: 'https://bikeshop-frontend.vercel.app/' }));
+app.use((0, cors_1.default)({ origin: 'https://classic-rider.netlify.app', credentials: true }));
 // application routes
 app.use('/api/v1', routes_1.default);
 app.get('/', (req, res) => {
